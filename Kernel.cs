@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Sys = Cosmos.System;
 using Cosmos.Debug.Kernel;
+using Cosmos.System.FileSystem;
 
 
 
@@ -10,14 +11,22 @@ namespace OSProject
 {
     public class Kernel : Sys.Kernel
     {
+        public static uint screenWidth = 640;
+        public static uint screenHeight = 480;
+        
+
         private static Sys.FileSystem.CosmosVFS FS;
         public static string file;
+       
+
         protected override void BeforeRun()
         {
-            FS = new Sys.FileSystem.CosmosVFS(); Sys.FileSystem.VFS.VFSManager.RegisterVFS(FS); FS.Initialize();
+            FS = new Sys.FileSystem.CosmosVFS(); 
+            Sys.FileSystem.VFS.VFSManager.RegisterVFS(FS);
+            FS.Initialize();
             Console.Clear();
-
             Console.WriteLine("Cosmos booted successfully. Check it out.");
+           
         }
 
         protected override void Run()
@@ -33,11 +42,11 @@ namespace OSProject
             }
             else if(i=="Editor"){
 
-                MIV.StartMIV();
+                //MIV.StartMIV();
             }
-            else if(i=="time"){
-                //Console.WriteLine(DateTime.Now.ToString("h:mm:ss tt"));
-                Commands.time();
+
+            else if(i=="File"){
+                Commands.file();
             }
             else
             {
