@@ -1,14 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Threading.Tasks;
 using Sys = Cosmos.System;
 
 namespace OSProject
 {
-   public class File
+   public class Files
     {
-        public File(String name) { }
+        public Files(String name) { }
         public  static String execute (String[] c)        {
             String response = "";
 
@@ -27,60 +28,101 @@ namespace OSProject
                     }
                     break;
                 case "del":
-                    Sys.FileSystem.VFS.VFSManager.DeleteFile(c[1]);
-                    response = "File deleted ! \n";
+                    try
+                    {
+                        Sys.FileSystem.VFS.VFSManager.DeleteFile(c[1]);
+                        response = "File deleted ! \n";
+                    }
+                    catch (Exception ex)
+                    {
+                        response = ex.ToString();
+                        break;
+                    }
                     break;
+                    
                 case "createdir":
-                    Sys.FileSystem.VFS.VFSManager.CreateDirectory(c[1]);
-                    response = "Directory created ! \n";
+                    try
+                    {
+                        Sys.FileSystem.VFS.VFSManager.CreateDirectory(c[1]);
+                        response = "Directory created ! \n";
+                    }
+                    catch (Exception ex)
+                    {
+                        response = ex.ToString();
+                        break;
+                    }
                     break;
                 case "rmdir":
-                    Sys.FileSystem.VFS.VFSManager.DeleteDirectory(c[1],true);
-                    response = "File created ! \n";
+                    try
+                    {
+                        Sys.FileSystem.VFS.VFSManager.DeleteDirectory(c[1], true);
+                        response = "Directory deleted ! \n";
+                    }
+                    catch (Exception ex)
+                    {
+                        response = ex.ToString();
+                        break;
+                    }
                     break;
                 case "write":
-                    FileStream fs=(FileStream) Sys.FileSystem.VFS.VFSManager.GetFile(c[1]).GetFileStream();
-                    if (fs.CanWrite)
+                    try
                     {
-                        int cnt = 0;
-                        StringBuilder sb = new StringBuilder();
-                        foreach(String s in c)
+                        FileStream fs = (FileStream)Sys.FileSystem.VFS.VFSManager.GetFile(c[1]).GetFileStream();
+                        if (fs.CanWrite)
                         {
-                            if (cnt > 1)
-                            {
-                                sb.Append(s + " ");
-                                ++cnt;
-                            }
+                            Console.WriteLine("Enter Text below");
+                            
+                            var x = Console.ReadLine();
+                            
+                             Utilities.WriteToFile(x, c[1]);
+                            //Console.WriteLine(x);
+                            response = "Written to file";
+                            fs.Close();
                         }
-                        Byte[] data = Encoding.ASCII.GetBytes(sb.ToString());
-                        fs.Write(data,0,data.Length);
-                        fs.Close();
-                    }
-                    else
+                        else
+                        {
+                            response = "Unable to write";
+                        }
+                    }catch(Exception ex)
                     {
-                        response = "Unable to write";
+                        response = ex.ToString();
+                        break;
                     }
                     break;
-                case "readstr":
-                    FileStream rs = (FileStream)Sys.FileSystem.VFS.VFSManager.GetFile(c[1]).GetFileStream();
-                    if (rs.CanRead)
+                case "read":
+                    try
                     {
-                        Byte[] dat = new Byte[256];
-                        rs.Read(dat, 0, dat.Length);
-                        response = Encoding.ASCII.GetString(dat);
-                    
-                    }
-                    else
-                    {
-                        response = "Cannot read file";
-                    }
+                        FileStream rs = (FileStream)Sys.FileSystem.VFS.VFSManager.GetFile(c[1]).GetFileStream();
+                        if (rs.CanRead)
+                        {
 
+                            try
+                            {
+                                Byte[] dat = new Byte[256];
+                                rs.Read(dat, 0, dat.Length);
+
+                                response = Encoding.ASCII.GetString(dat);
+                                //Sys.FileSystem.VFS.VFSManager.ReadFile(c[1]);
+                                string text = System.IO.File.ReadAllText(c[1]);
+                                Console.WriteLine(text);
+                            }catch(Exception ex)
+                            {
+                                Console.WriteLine(ex);                            }
+                            }
+                        else
+                        {
+                            response = "Cannot read file";
+                        }
+                    }catch(Exception ex)
+                    {
+                        response = ex.ToString();
+                        break;
+                    }
                     break;
                 default:
                     response = "Unexpected Argument";
                     break;
-
-            }
+                                }
             return response;
             
         }
