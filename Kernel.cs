@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Sys = Cosmos.System;
@@ -23,7 +23,7 @@ namespace OSProject
         {
             FS = new Sys.FileSystem.CosmosVFS(); 
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(FS);
-            FS.Initialize();
+            //FS.Initialize();
             Console.Clear();
             Console.WriteLine("Cosmos booted successfully. Check it out.");
            
@@ -33,20 +33,28 @@ namespace OSProject
         {
             Commands.SayHello();
             Console.WriteLine("Input: ");
-            Console.BackgroundColor = ConsoleColor.Green;
+           
            string i;
             i = Console.ReadLine();
             if (i == "Calculator")
             {
                 Commands.add();
             }
-            else if(i=="Editor"){
+            else if(i=="Time"){
 
-                //MIV.StartMIV();
+                Console.WriteLine(Commands.time());
             }
 
             else if(i=="File"){
                 Commands.file();
+            }
+            else if (i == "ShutDown")
+            {
+                Cosmos.System.Power.Shutdown();
+            }
+            else if (i == "Reboot")
+            {
+                Cosmos.System.Power.Reboot();
             }
             else
             {
