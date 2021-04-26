@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -42,9 +42,16 @@ namespace OSProject
             uint second = Utilities.ReadNum(0, 1000000);
             Console.WriteLine("The Difference between the 2 numbers is  " + (first / second));
         }
-        public static void time()
+        public static String time()
         {
-            Console.WriteLine(DateTime.Now.ToString("h:mm:ss tt"));
+            DateTime localDate = DateTime.Now;
+            String time = localDate.ToString();
+            return time; 
         }
-    }
+        public static void file()
+        {
+            
+            Console.WriteLine(Utilities.FileCom());
+        }
+    } 
 }
