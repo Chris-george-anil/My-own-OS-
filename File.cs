@@ -30,7 +30,8 @@ namespace OSProject
                 case "del":
                     try
                     {
-                        Sys.FileSystem.VFS.VFSManager.DeleteFile(c[1]);
+                        //Sys.FileSystem.VFS.VFSManager.DeleteFile(c[1]);
+                        File.Delete(c[1]);
                         response = "File deleted ! \n";
                     }
                     catch (Exception ex)
@@ -77,6 +78,7 @@ namespace OSProject
                              Utilities.WriteToFile(x, c[1]);
                             //Console.WriteLine(x);
                             response = "Written to file";
+                           Console.WriteLine(Path.GetFullPath(c[1]));
                             fs.Close();
                         }
                         else
@@ -96,29 +98,70 @@ namespace OSProject
                         if (rs.CanRead)
                         {
 
-                            try
-                            {
+                         
                                 Byte[] dat = new Byte[256];
                                 rs.Read(dat, 0, dat.Length);
 
-                                response = Encoding.ASCII.GetString(dat);
+                                //response = Encoding.ASCII.GetString(dat);
                                 //Sys.FileSystem.VFS.VFSManager.ReadFile(c[1]);
-                                string text = System.IO.File.ReadAllText(c[1]);
-                                Console.WriteLine(text);
-                            }catch(Exception ex)
+                                response = System.IO.File.ReadAllText(c[1]);
+                                //Console.WriteLine(text);                            
+                            }  
+                          else
                             {
-                                Console.WriteLine(ex);                            }
+                                response = "Cannot read file";
                             }
-                        else
-                        {
-                            response = "Cannot read file";
-                        }
-                    }catch(Exception ex)
+                        
+                         
+                      } catch (Exception ex)
                     {
                         response = ex.ToString();
                         break;
                     }
                     break;
+
+                case "show":
+                    try
+                    {
+                        string path = Directory.GetCurrentDirectory();
+                        string[] fileEntries = Directory.GetFiles(path);
+                        foreach (string fileName in fileEntries)
+                            Console.WriteLine(fileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        response = ex.ToString();
+                        break;
+                    }
+                    break;
+
+                case "update":
+                    try
+                    {
+                        FileStream fs = (FileStream)Sys.FileSystem.VFS.VFSManager.GetFile(c[1]).GetFileStream();
+                        if (fs.CanWrite)
+                        {
+                            Console.WriteLine("Enter Text below");
+                            var x = Console.ReadLine();
+                            string text = System.IO.File.ReadAllText(c[1]);
+
+                            Utilities.WriteToFile(text+x, c[1]);
+                            //Console.WriteLine(x);
+                            response = "Written to file";
+                            fs.Close();
+                        }
+                        else
+                        {
+                            response = "Unable to write";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        response = ex.ToString();
+                        break;
+                    }
+                    break;
+
                 default:
                     response = "Unexpected Argument";
                     break;
